@@ -1,17 +1,27 @@
-[![Build Status](https://travis-ci.org/Lullabot/amp-library.svg?branch=master)](https://travis-ci.org/Lullabot/amp-library)
+
 # AMP PHP Library
 
 An open source PHP library and console utility to convert HTML to [AMP HTML](https://www.ampproject.org/) and report HTML compliance with the AMP HTML specification.
 
-### What is the AMP PHP Library?
+## Fork notice
+
+This repo is forked from Lullabot/amp-library, the original repo is out of date and it seems like nobody is maintain it.
+It's good for PHP ecosystem to have a active repo to convert normal html to amp-html.
+Since Google is keeping updating AMP tech Spec,please do not hesitate to commit issues.
+
+## What is the AMP PHP Library
 
 The AMP PHP Library is an open source and pure PHP Library that:
+
 - Works with whole or partial HTML documents (or strings). Specifically, the AMP PHP Library:
- - Reports compliance of a whole/partial HTML document with the [AMP HTML specification](https://www.ampproject.org/). We implement an AMP HTML validator in pure PHP to report compliance of an arbitrary HTML document / HTML fragment with the AMP HTML standard. This validator is a ported subset of the [canonical validator](https://github.com/ampproject/amphtml/tree/master/validator) that is implemented in JavaScript 
-    - Specifically, the PHP validator supports tag specification validation, attribute specification validation, CDATA validation, CSS validation, layout validation, template validation and attribute property-value pair validation. It will report tags and attributes that are missing, illegal, mandatory according to spec but not present, unique according to spec but multiply present, having wrong parents or ancestors or children and so forth.
-    - _Note_: while the AMP PHP library (already) supports many of the features and capabilities of the canonical validator, it is not intended to achieve parity in _every_ respect with the canonical validator. Even _within_ the features we support (e.g. CSS validation) there may be certain validation issues that we don't flag but the canonical validator does.   
- - Using the feedback given by the in-house PHP validator, the AMP PHP library tries to "correct" some issues found in the HTML to make it more AMP HTML compliant. This would, for example, involve:
-    - Removing illegal attributes e.g. `style` attribute within `<body>` tag 
+
+- Reports compliance of a whole/partial HTML document with the [AMP HTML specification](https://www.ampproject.org/). We implement an AMP HTML validator in pure PHP to report compliance of an arbitrary HTML document / HTML fragment with the AMP HTML standard. This validator is a ported subset of the [canonical validator](https://github.com/ampproject/amphtml/tree/master/validator) that is implemented in JavaScript
+
+  - Specifically, the PHP validator supports tag specification validation, attribute specification validation, CDATA validation, CSS validation, layout validation, template validation and attribute property-value pair validation. It will report tags and attributes that are missing, illegal, mandatory according to spec but not present, unique according to spec but multiply present, having wrong parents or ancestors or children and so forth.
+
+  - _Note_: while the AMP PHP library (already) supports many of the features and capabilities of the canonical validator, it is not intended to achieve parity in _every_ respect with the canonical validator. Even _within_ the features we support (e.g. CSS validation) there may be certain validation issues that we don't flag but the canonical validator does.
+  - Using the feedback given by the in-house PHP validator, the AMP PHP library tries to "correct" some issues found in the HTML to make it more AMP HTML compliant. This would, for example, involve:
+    - Removing illegal attributes e.g. `style` attribute within `<body>` tag
     - Removing all kinds of illegal tags e.g. `<script>` within `<body>` tag, a tag with a disallowed ancestor, a duplicate unique tag etc.
     - Removing illegal property value pairs e.g. removing `minimum-scale=hello` from `<meta name="viewport" content="width=device-width,minimum-scale=hello">`
     - Adding or correcting the tags necessary for a minimally valid AMP document:
@@ -21,11 +31,11 @@ The AMP PHP Library is an open source and pure PHP Library that:
       - Boilerplate CSS
     - If there are mutually exclusive attributes for a tag, removing all but one of them
     - Fixing issues with `amp-img` tags that have problems like inconsistent units, invalid attributes, missing mandatory attributes, invalid implied or specified layouts.
-    - _Notes_: 
-       - The library does a decent job of _removing_ bad things and in a few cases makes some corrections/additions to the HTML. As the library cannot understand the true _intention_ of the user, a lot the validation problems in the HTML may eventually need to be fixed manually by the human.
-       - In general, the library will try to fix validation errors in `<head>` and if its not successful in doing so, _remove_ those tags from `<head>`. Within `<body>` the AMP PHP library is less aggressive and in most cases will _not_ remove the tag from the document if the tag does not validate after it attempts any fixes on it.
-       - The library needs to be provided with well formed HTML / HTML5. Please don't give it faulty, incorrect html (e.g. non closed `<div>` tags etc). The correction it does is related to AMP HTML standard issues only. Use a HTML tidying library if you expect your HTML to be malformed.
- - Converts some non-amp elements to their AMP equivalents automatically
+    - _Notes_:
+      - The library does a decent job of _removing_ bad things and in a few cases makes some corrections/additions to the HTML. As the library cannot understand the true _intention_ of the user, a lot the validation problems in the HTML may eventually need to be fixed manually by the human.
+        - In general, the library will try to fix validation errors in `<head>` and if its not successful in doing so, _remove_ those tags from `<head>`. Within `<body>` the AMP PHP library is less aggressive and in most cases will _not_ remove the tag from the document if the tag does not validate after it attempts any fixes on it.
+        - The library needs to be provided with well formed HTML / HTML5. Please don't give it faulty, incorrect html (e.g. non closed `<div>` tags etc). The correction it does is related to AMP HTML standard issues only. Use a HTML tidying library if you expect your HTML to be malformed.
+  - Converts some non-amp elements to their AMP equivalents automatically
     - A `<img>` tag is converted to an `<amp-img>` tag
     - A `<iframe>` tag is converted to an `<amp-iframe>` tag
     - A [`<audio>`](https://github.com/Lullabot/amp-library/blob/master/tests/test-data/fragment-html/audio-to-amp-audio-conversion-fragment.html) tag is converted to an `<amp-audio>` tag
@@ -39,14 +49,14 @@ The AMP PHP Library is an open source and pure PHP Library that:
     - [Vimeo embed code](https://github.com/Lullabot/amp-library/blob/master/tests/test-data/fragment-html/vimeo-fragment.html) for videos is converted to an `<amp-vimeo>` tag
     - [Vine embed code](https://github.com/Lullabot/amp-library/blob/master/tests/test-data/fragment-html/vine-fragment.html) for videos is converted to an `<amp-vine>` tag
     - Facebook [iframe](https://github.com/Lullabot/amp-library/blob/master/tests/test-data/fragment-html/facebook-iframe-fragment.html) and [Javascript SDK](https://github.com/Lullabot/amp-library/blob/master/tests/test-data/fragment-html/facebook-non-iframe-fragment.html) embed code for posts and videos is converted to an `<amp-facebook>` tag
-    - _Notes_: 
-       - Some of these embed code conversions may not have the advanced features you may require. File an issue if you need enhancements to the functionality already provided or new embed code conversions
-       - Some of the embed codes have an associated `<script>` tag. These conversions will work even if no `<script>` tag was added to your HTML document. The AMP library will add the appropriate AMP component `<script>` tag to the `<head>` if it is provided a full html document.
-       - You may experiment with the command line utility `amp-console` on the above HTML fragments to see how the converted HTML looks
-- Provides both a console and programmatic interface with which to call the library. It works like this: the developer first provides some HTML. After processing it, the library returns: 
-    - The AMPized HTML
-    - A list of validation errors in the HTML provided 
-    - A description of fixes and embed code conversions made to the HTML  
+    - _Notes_:
+      - Some of these embed code conversions may not have the advanced features you may require. File an issue if you need enhancements to the functionality already provided or new embed code conversions
+      - Some of the embed codes have an associated `<script>` tag. These conversions will work even if no `<script>` tag was added to your HTML document. The AMP library will add the appropriate AMP component `<script>` tag to the `<head>` if it is provided a full html document.
+      - You may experiment with the command line utility `amp-console` on the above HTML fragments to see how the converted HTML looks
+- Provides both a console and programmatic interface with which to call the library. It works like this: the developer first provides some HTML. After processing it, the library returns:
+  - The AMPized HTML
+  - A list of validation errors in the HTML provided
+  - A description of fixes and embed code conversions made to the HTML  
 
 ### Use Cases
 
@@ -71,7 +81,7 @@ For all other scenarios, continue reading.
 After doing a `$ composer install` for setting up the command line console, you can run some [phpunit](https://phpunit.de/) tests
 
 ```bash
-$ vendor/bin/phpunit tests
+vendor/bin/phpunit tests
 ```
 
 ##### Looking at test coverage
@@ -79,10 +89,10 @@ $ vendor/bin/phpunit tests
 To see test coverage data first ensure you have the xdebug extenstion installed in your PHP installation.
 
 ```bash
-$ php -m | grep xdebug # should output xdebug
-$ vendor/bin/phpunit tests --coverage-html=coverage-data
-$ cd coverage-data
-$ firefox index.html
+php -m | grep xdebug # should output xdebug
+vendor/bin/phpunit tests --coverage-html=coverage-data
+cd coverage-data
+firefox index.html
 ```
 
 #### Setup for your composer based PHP project
@@ -92,16 +102,17 @@ To use this in your composer based PHP project, refer to [composer docs here](ht
 Or you can simply do `$ composer require lullabot/amp:"^1.0.0"` to fetch the library from [here](https://packagist.org/packages/lullabot/amp) and automatically update your `composer.json`
 
 ##### Advanced
+
 Should you wish to follow the bleeding edge you can do `$ composer require lullabot/amp:"dev-master"`. Note that this will create a `.git` folder in `vendor/lullabot/amp`. If you want to avoid that,  do `$ composer require lullabot/amp:"dev-master" --prefer-dist`
 
 ### Using the command line `amp-console`
 
 ```bash
-$ cd <amp-php-library-repo-cloned-location>
+cd <amp-php-library-repo-cloned-location>
 # Do this if you haven't already
-$ composer install
-$ ./amp-console amp:convert --help
-$ ./amp-console amp:convert <name-of-html-document> <options> 
+composer install
+./amp-console amp:convert --help
+./amp-console amp:convert <name-of-html-document> <options>
 ```
 
 Please note that the `--help` command line option is your friend. Use that when confused!
@@ -109,16 +120,17 @@ Please note that the `--help` command line option is your friend. Use that when 
 A few example HTML files are available in the test-html folder for you to test drive so that you can get a flavor of the AMP PHP library.
 
 ```bash
-$ ./amp-console amp:convert sample-html/sample-html-fragment.html
-$ ./amp-console amp:convert sample-html/several_errors.html --full-document
+./amp-console amp:convert sample-html/sample-html-fragment.html
+./amp-console amp:convert sample-html/several_errors.html --full-document
 ```
+
 Note that you need to provide `--full-document` if you're providing a full html document file for conversion.
 
 Lets see the output of the first example command above. The first few lines is the AMPized HTML provided by our library. The rest of the headings are self explanatory.
 
 ```html
-$ cd <amp-php-library-repo-cloned-location>
-$ ./amp-console amp:convert sample-html/sample-html-fragment.html 
+cd <amp-php-library-repo-cloned-location>
+./amp-console amp:convert sample-html/sample-html-fragment.html
 Line  1: <p><a>Run</a></p>
 Line  2: <p><a href="http://www.cnn.com">CNN</a></p>
 Line  3: <amp-img src="http://i2.cdn.turner.com/cnnnext/dam/assets/160208081229-gaga-superbowl-exlarge-169.jpg" width="780" height="438" layout="responsive"></amp-img>
@@ -126,9 +138,9 @@ Line  4: <p><a href="http://www.bbcnews.com" target="_blank">BBC</a></p>
 Line  5: <p></p>
 Line  6: <p>This is a <!-- test comment -->sample </p><div>sample</div> paragraph
 Line  7: <amp-iframe height="315" width="560" sandbox="allow-scripts allow-same-origin" layout="responsive" src="https://www.reddit.com"></amp-iframe>
-Line  8: 
-Line  9: 
-Line 10: 
+Line  8:
+Line  9:
+Line 10:
 
 
 ORIGINAL HTML
@@ -142,7 +154,7 @@ Line  6: <p>This is a <!-- test comment -->sample <div onmouseover="hello();">sa
 Line  7: <iframe src="https://www.reddit.com"></iframe>
 Line  8: <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 Line  9: <style></style>
-Line 10: 
+Line 10:
 
 
 Transformations made from HTML tags to AMP custom tags
@@ -220,7 +232,7 @@ $html =
     '<p>This is a <div onmouseover="hello();">sample</div> paragraph</p>';
 
 // Load up the HTML into the AMP object
-// Note that we only support UTF-8 or ASCII string input and output. (UTF-8 is a superset of ASCII) 
+// Note that we only support UTF-8 or ASCII string input and output. (UTF-8 is a superset of ASCII)
 $amp->loadHtml($html);
 
 // If you're feeding it a complete document use the following line instead
@@ -249,14 +261,17 @@ print($amp->warningsHumanText());
 ```
 
 ### Tips
+
 - Its probably not a good idea to run the library on your HTML dynamically on _every_ page view. You should try caching the results of `$amp->convertToAmpHtml()` once the library has run. If you're using the library from a CMS then you should consider using the caching facilities provided by the CMS.
 
 ### Caveats and Known issues
-- We only support UTF-8 string input and output from the library. If you're using ASCII, then you don't need to worry as UTF-8 is a superset of ASCII. If you're using another encoding like Latin-1 (etc.) you'll need to convert to UTF-8 strings before you use this library 
-- If you have `<img>`s with `https` urls _and_ they don't have height/width attributes _and_ you are using PHP 5.6 or higher _and_ you have not listed any certificate authorities (`cafile`) in your `php.ini` file  _then_ the library may have problems converting these to `<amp-img>`. This is because of http://php.net/manual/en/migration56.openssl.php . That link also has a work around.
-- If your `<amp-pinterest>` pins are appearing "chopped off" (after pinterest embed code conversion) try the workaround [here](https://github.com/Lullabot/amp-library/issues/46#issuecomment-230424580) 
+
+- We only support UTF-8 string input and output from the library. If you're using ASCII, then you don't need to worry as UTF-8 is a superset of ASCII. If you're using another encoding like Latin-1 (etc.) you'll need to convert to UTF-8 strings before you use this library
+- If you have `<img>`s with `https` urls _and_ they don't have height/width attributes _and_ you are using PHP 5.6 or higher _and_ you have not listed any certificate authorities (`cafile`) in your `php.ini` file  _then_ the library may have problems converting these to `<amp-img>`. This is because of [php5.6.openssl](http://php.net/manual/en/migration56.openssl.php) . That link also has a work around.
+- If your `<amp-pinterest>` pins are appearing "chopped off" (after pinterest embed code conversion) try the workaround [here](https://github.com/Lullabot/amp-library/issues/46#issuecomment-230424580)
 
 ### Useful Links
+
 - [Composer homepage](https://packagist.org/packages/lullabot/amp) for the AMP PHP Library on [Packagist](https://packagist.org/), the PHP package repository
 - AMP Project [Homepage](https://www.ampproject.org/)
 - AMP Project [code repository](https://github.com/ampproject/amphtml) on Github
@@ -273,13 +288,12 @@ You can ignore these links if you simply plan to _use_ this library and not deve
 ### Third-party libraries
 
 - Symfony:
-    - [takeit/amp-html-bundle](https://github.com/takeit/AmpHtmlBundle)
+  - [takeit/amp-html-bundle](https://github.com/takeit/AmpHtmlBundle)
 
 - Drupal:
-    - [Drupal AMP Module](https://www.drupal.org/project/amp)
+  - [Drupal AMP Module](https://www.drupal.org/project/amp)
 
 ### Sponsored by
 
 - Google for creating the AMP Project and sponsoring development
 - Lullabot for development of the module, theme, and library to work with the specifications
-
