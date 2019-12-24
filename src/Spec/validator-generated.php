@@ -5024,6 +5024,13 @@ class ValidationRulesFactory {
   $o_1226 = new AttrSpec();
   $o_1226->name = 'i-amp-access-id';
   $o_1158->attrs[] = $o_1226;
+
+  /* let style attr go */
+  $o_2567 = new AttrSpec();
+  $o_2567->name = 'style';
+  $o_2567->blacklisted_value_regex = '!\\s*important';
+  $o_1158->attrs[] = $o_2567;
+
   $o_0->attr_lists[] = $o_1158;
   $o_0->template_spec_url = 'https://www.ampproject.org/docs/reference/extended/amp-mustache.html';
   $o_1227 = new ErrorFormat();
@@ -5270,6 +5277,7 @@ class ValidationRulesFactory {
   $o_1287->code = ValidationErrorCode::CSS_SYNTAX_INVALID_ATTR_SELECTOR;
   $o_1287->format = 'CSS syntax error in tag \'%1\' - invalid attribute selector.';
   $o_0->error_formats[] = $o_1287;
+
   return $o_0;
   }
 }

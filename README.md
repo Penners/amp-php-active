@@ -9,6 +9,10 @@ This repo is forked from Lullabot/amp-library, the original repo is out of date 
 It's good for PHP ecosystem to have a active repo to convert normal html to amp-html.
 Since Google is keeping updating AMP tech Spec,please do not hesitate to commit issues.
 
+## Issues fix
+
+1. fix issues [#268](https://github.com/Lullabot/amp-library/issues/268)
+
 ## What is the AMP PHP Library
 
 The AMP PHP Library is an open source and pure PHP Library that:
